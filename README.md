@@ -1,2 +1,2 @@
-# ReconocedorDeGatosJFX
-Aplicación JavaFX que utiliza la librería OpenCV para detectar algunas razas de gatos. Se utiliza métodos para entrenamiento de openCV.
+# ReconocedorDeCarasJFX
+Aplicación JavaFX que utiliza la librería OpenCV para detectar caras en las fotos. No utiliza métodos de entrenamiento, solo haarcascade.
