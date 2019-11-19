@@ -1,2 +1,2 @@
-# ParqueaderoJFX
-Aplicación JavaFX que utiliza la librería OpenCV para detectar los estacionamientos vacíos de un parqueadero y que utiliza uno de los métodos de búsqueda para informar del mejor puesto disponible a partir de la entrada.
+# ReconocedorDeRostrosJFX
+Aplicación JavaFX que utiliza la librería OpenCV para detectar caras en las fotos. No utiliza métodos de entrenamiento, solo haarcascade.
