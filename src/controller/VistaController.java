@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -43,12 +44,10 @@ public class VistaController implements Initializable {
 
     private Mat imgcolor;
 
-    private Mat imggray;
-
     private FileChooser fc;
 
     private File file;
-    CascadeClassifier classifier = new CascadeClassifier("haar/haarcascade_frontalface_default.xml");
+    CascadeClassifier classifier;
 
     public void addResult(String title, String text) {
         if (textResult.getText().isEmpty()) {
@@ -67,38 +66,41 @@ public class VistaController implements Initializable {
         //The user can be set the image file to compare...
         fc = new FileChooser();
         fc.setTitle("Seleccione una imagen");
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Imágenes", "*.jpg","*.png","*.jpeg");
+        fc.getExtensionFilters().add(extensionFilter);
+        fc.setInitialDirectory(new File(System.getProperty("user.home") + "\\Desktop\\"));
         file = fc.showOpenDialog(Main.stageStatic);
         if (file != null) {
             //Read image from file first param:file location ,second param:color space
             imgcolor = Imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_COLOR);
-            imggray = Imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
             imgcargada.setImage(new Image(file.toURI().toString()));
             //If the image is successfully read.
-            if (imgcolor.empty()) {
-                JOptionPane.showMessageDialog(null, "Imagen no encontrada");
-                System.exit(1);
-            } else {
+            if (!imgcolor.empty()) {
                 addResult("Rows", "" + imgcolor.rows());
                 addResult("Cols", "" + imgcolor.cols());
             }
 
         }
     }
-
     public void detectarRostro() {
-        MatOfRect faces = new MatOfRect();
-        classifier.detectMultiScale(imgcolor, faces);
-        for (Rect r : faces.toArray()) {
-            Imgproc.rectangle(imgcolor, r.tl(), r.br(), new Scalar(0, 255, 0));
+        if (!imgcolor.empty()) {
+            MatOfRect faces = new MatOfRect();
+            classifier.detectMultiScale(imgcolor, faces);
+            for (Rect r : faces.toArray()) {
+                Imgproc.rectangle(imgcolor, r.tl(), r.br(), new Scalar(0, 255, 0), 4);
+            }
+            Imgcodecs.imwrite("result/result.jpg", imgcolor);
+            imgresult.setImage(new Image(new File("result/result.jpg").toURI().toString()));
+        }else{
+            addResult("Error", "Primero cargue una imagen");
         }
-        Imgcodecs.imwrite("result/result.jpg", imgcolor); 
-        imgresult.setImage(new Image(new File("result/result.jpg").toURI().toString()));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Load native opencv library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        classifier = new CascadeClassifier("haar/haarcascade_frontalface_default.xml");
     }
 
 }
