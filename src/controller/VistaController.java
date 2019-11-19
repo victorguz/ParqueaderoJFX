@@ -5,22 +5,11 @@
  */
 package controller;
 
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Graphics2D;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -31,8 +20,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.dnn.Net;
-import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -61,7 +48,7 @@ public class VistaController implements Initializable {
     private FileChooser fc;
 
     private File file;
-    CascadeClassifier cc = new CascadeClassifier("haar/haarcascade_frontalface_default.xml");
+    CascadeClassifier classifier = new CascadeClassifier("haar/haarcascade_frontalface_default.xml");
 
     public void addResult(String title, String text) {
         if (textResult.getText().isEmpty()) {
@@ -93,26 +80,21 @@ public class VistaController implements Initializable {
             } else {
                 addResult("Rows", "" + imgcolor.rows());
                 addResult("Cols", "" + imgcolor.cols());
-                detectarCara();
             }
 
         }
     }
 
-    public void detectarCara() {
+    public void detectarRostro() {
         MatOfRect faces = new MatOfRect();
-        cc.detectMultiScale(imgcolor, faces);
+        classifier.detectMultiScale(imgcolor, faces);
         for (Rect r : faces.toArray()) {
             Imgproc.rectangle(imgcolor, r.tl(), r.br(), new Scalar(0, 255, 0));
         }
-        Imgcodecs.imwrite("result/result.jpg", imgcolor);
+        Imgcodecs.imwrite("result/result.jpg", imgcolor); 
         imgresult.setImage(new Image(new File("result/result.jpg").toURI().toString()));
     }
 
-    public void obtener(){
-        
-    }
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Load native opencv library

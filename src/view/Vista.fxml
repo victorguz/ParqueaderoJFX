@@ -21,6 +21,7 @@
             <HBox alignment="CENTER" spacing="10.0">
                <children>
                   <Button onAction="#cargar" text="Cargar imagen" />
+                  <Button onAction="#detectarRostro" text="Detectar rostro" />
                </children>
                <padding>
                   <Insets bottom="10.0" />
